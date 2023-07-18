@@ -12,7 +12,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     public class OnSelectedCounterEventArgs : EventArgs
     {
-        public ClearCounter selectedCounter;
+        public BaseCounter selectedCounter;
     }
 
     [SerializeField]
@@ -34,7 +34,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private LayerMask countersLayersMask;
 
     private Vector3 lastInteractionDirection;
-    private ClearCounter selectedCounter;
+    private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
     public bool IsWalking { get; private set; }
@@ -47,6 +47,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private void Start()
     {
         gameInput.OnInteractAction += GameInput_OnInteractAction;
+        gameInput.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
     }
 
     private void Update()
@@ -54,10 +55,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         HandleInteractions();
         HandleMovement();
     }
-    private void SetSelectedCounter(ClearCounter value)
+    private void SetSelectedCounter(BaseCounter counter)
     {
-        selectedCounter = value;
-        var args = new OnSelectedCounterEventArgs { selectedCounter = value };
+        selectedCounter = counter;
+        var args = new OnSelectedCounterEventArgs { selectedCounter = counter };
         OnSelectedCounterChange?.Invoke(this, args);
     }
 
@@ -69,15 +70,23 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         }
     }
 
+    private void GameInput_OnInteractAlternateAction(object sender, EventArgs e)
+    {
+        if (selectedCounter != null)
+        {
+            selectedCounter.InteractAlternate(this);
+        }
+    }
+
     private void HandleInteractions()
     {
         if (Physics.Raycast(transform.position, lastInteractionDirection, out RaycastHit raycastHit, interactionRange))
         {
-            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if (raycastHit.transform.TryGetComponent(out BaseCounter counter))
             {
-                if (clearCounter != selectedCounter)
+                if (counter != selectedCounter)
                 {
-                    SetSelectedCounter(clearCounter);
+                    SetSelectedCounter(counter);
                 }
             }
             else

@@ -5,9 +5,19 @@ using UnityEngine;
 public class KitchenObject : MonoBehaviour
 {
     [SerializeField]
-    private KitchenObjectSO scriptableObject;
+    private KitchenObjectScriptableObject scriptableObject;
 
     private IKitchenObjectParent kitchenObjectParent;
+
+    public KitchenObjectScriptableObject ScriptableObject { get => scriptableObject; }
+
+    public static KitchenObject Spawn(KitchenObjectScriptableObject scriptableObject, IKitchenObjectParent parent)
+    {
+        var kitchenObjectTransform = Instantiate(scriptableObject.prefab, parent.GetKitchenObjectFollowTransform());
+        var kitchenObject = kitchenObjectTransform.GetComponent<KitchenObject>();
+        kitchenObject.SetClearCounter(parent);
+        return kitchenObject;
+    }
 
     public IKitchenObjectParent GetKitchenObjectParent()
     {
@@ -28,5 +38,10 @@ public class KitchenObject : MonoBehaviour
         transform.localPosition = Vector3.zero;
     }
 
-    public KitchenObjectSO ScriptableObject { get => scriptableObject; }
+    public void DestroySelf()
+    {
+        kitchenObjectParent.ClearKitchenObject();
+
+        Destroy(gameObject);
+    }
 }
