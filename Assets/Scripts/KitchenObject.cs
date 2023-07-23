@@ -15,7 +15,7 @@ public class KitchenObject : MonoBehaviour
     {
         var kitchenObjectTransform = Instantiate(scriptableObject.prefab, parent.GetKitchenObjectFollowTransform());
         var kitchenObject = kitchenObjectTransform.GetComponent<KitchenObject>();
-        kitchenObject.SetClearCounter(parent);
+        kitchenObject.SetKitchenObjectParent(parent);
         return kitchenObject;
     }
 
@@ -24,7 +24,7 @@ public class KitchenObject : MonoBehaviour
         return kitchenObjectParent;
     }
 
-    public void SetClearCounter(IKitchenObjectParent newKitchenObjectParent)
+    public void SetKitchenObjectParent(IKitchenObjectParent newKitchenObjectParent)
     {
         if (kitchenObjectParent != null)
         {
@@ -36,6 +36,18 @@ public class KitchenObject : MonoBehaviour
 
         transform.parent = kitchenObjectParent.GetKitchenObjectFollowTransform();
         transform.localPosition = Vector3.zero;
+    }
+
+    public bool TryGetPlate(out PlateKitchenObject plateKitchenObject)
+    {
+        if(this is PlateKitchenObject)
+        {
+            plateKitchenObject = this as PlateKitchenObject;
+            return true;
+        }
+
+        plateKitchenObject = null;
+        return false;
     }
 
     public void DestroySelf()

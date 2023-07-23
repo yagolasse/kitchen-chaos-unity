@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2482f504d41d63a49817b25b8cc97df4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearCounter: {fileID: 77804499096113639}
+  counter: {fileID: 77804499096113639}
   selectedCounterVisual:
   - {fileID: 2093616102185853138}
   - {fileID: 32864115599757147}

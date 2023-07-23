@@ -4,14 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CuttingCounter : BaseCounter, IKitchenObjectParent
+public class CuttingCounter : BaseCounter, IKitchenObjectParent, IHasProgress
 {
-    public event EventHandler<OnProgressChangeArgs> OnProgressChange;
-
-    public class OnProgressChangeArgs : EventArgs
-    {
-        public float progressNormalized;
-    }
+    public event EventHandler OnCut;
+    public event EventHandler<IHasProgress.OnProgressChangeArgs> OnProgressChange;
 
     [SerializeField]
     private CuttingRecipeScriptableObject[] recipes;
@@ -22,15 +18,27 @@ public class CuttingCounter : BaseCounter, IKitchenObjectParent
     {
         if (!HasKitchenObject() && player.HasKitchenObject() && HasRecipeWithInput(player.GetKitchenObject().ScriptableObject))
         {
-            player.GetKitchenObject().SetClearCounter(this);
+            player.GetKitchenObject().SetKitchenObjectParent(this);
             cuttingProgress = 0;
-            OnProgressChange?.Invoke(this, new OnProgressChangeArgs { progressNormalized = 0 });
         }
-        else if (!player.HasKitchenObject())
+        else
         {
-            GetKitchenObject().SetClearCounter(player);
-            OnProgressChange?.Invoke(this, new OnProgressChangeArgs { progressNormalized = 0 });
+            if (player.HasKitchenObject())
+            {
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plate))
+                {
+                    if (plate.TryAddIngredient(GetKitchenObject().ScriptableObject))
+                    {
+                        GetKitchenObject().DestroySelf();
+                    }
+                }
+            }
+            else
+            {
+                GetKitchenObject().SetKitchenObjectParent(player);
+            }
         }
+        OnProgressChange?.Invoke(this, new IHasProgress.OnProgressChangeArgs { progressNormalized = 0 });
     }
 
     public override void InteractAlternate(Player player)
@@ -43,8 +51,10 @@ public class CuttingCounter : BaseCounter, IKitchenObjectParent
 
             cuttingProgress++;
 
-            OnProgressChange?.Invoke(this, new OnProgressChangeArgs { progressNormalized = (float)cuttingProgress / recipe.cuttingProgressMax });
+            OnCut?.Invoke(this, EventArgs.Empty);
 
+            OnProgressChange?.Invoke(this, new IHasProgress.OnProgressChangeArgs { progressNormalized = (float)cuttingProgress / recipe.cuttingProgressMax });
+            
             if (cuttingProgress >= recipe.cuttingProgressMax)
             {
                 GetKitchenObject().DestroySelf();

@@ -85,6 +85,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 77b28124b8bda494381c80bd5aa42c22,
         type: 3}
+    - target: {fileID: 5596478452240515689, guid: 8dc9ffd29c00bb64688ab112a5262f8e,
+        type: 3}
+      propertyPath: counter
+      value: 
+      objectReference: {fileID: 3080357114430806483}
     - target: {fileID: 5722868733959557260, guid: 8dc9ffd29c00bb64688ab112a5262f8e,
         type: 3}
       propertyPath: m_Sprite
@@ -111,3 +116,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8dc9ffd29c00bb64688ab112a5262f8e, type: 3}
+--- !u!114 &3080357114430806483 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 77804499096113639, guid: 8dc9ffd29c00bb64688ab112a5262f8e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3146831682988132404}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9513dd521680e144910e3f18c6ff5c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
